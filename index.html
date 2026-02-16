@@ -1,372 +1,484 @@
-<!-- ======= THÊM KEY Ở ĐÂY ============== -->
-<script>
-    // hãy nhập key mà bạn muốn ở đây
-    const validKeys = ["Filethaykhanhba"];
-</script>
-<!-- 
-    Muốn chuyển thành File cấu hình iOS 
-    Hoặc thêm tính năng gì (phí nhẹ)
-    ib Telegram https://t.me/ghen1234g 
--->
-
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chức Năng Game — Menu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Oreki Cyber AI Demo</title>
+
   <style>
-    :root {
-      --bg: #0f1113;
-      --card: #121315;
-      --muted: #9aa0a6;
-      --highlight-border: #1e90ff;   
-      --toggle-bg: #0f1113;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body, html {
-      height: 100%;
-      font-family: Inter, system-ui, Arial;
-      color: #fff;
-      overflow-x: hidden;
-      background-color: var(--bg);
-    }
-
     body {
-      background: url("https://v1.pinimg.com/videos/mc/720p/04/16/a5/0416a538a33dc1988e9207696cb63c78.mp4") no-repeat center center fixed;
-      background-size: cover;
+      margin: 0;
+      font-family: Consolas, monospace;
+      background: black;
+      color: lime;
+      text-align: center;
+      padding: 20px;
     }
 
-    .container {
-      max-width: 420px;
-      width: 100%;
+    h1 {
+      color: #00ff99;
+      text-shadow: 0 0 15px lime;
+    }
+
+    /* SOCIAL */
+    .social a {
+      display: block;
+      margin: 10px auto;
+      padding: 12px;
+      width: 260px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      color: black;
+      background: lime;
+      box-shadow: 0 0 15px rgba(0,255,0,0.5);
+    }
+
+    .social a:hover {
+      background: #00ff99;
+      transform: scale(1.05);
+    }
+
+    /* CARD */
+    .card {
+      border: 2px solid lime;
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 480px;
       margin: auto;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
+      background: rgba(0,255,0,0.05);
+      box-shadow: 0 0 25px rgba(0,255,0,0.4);
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid lime;
+      margin: 10px 0;
+      background: black;
+      color: lime;
+      font-size: 16px;
+    }
+
+    /* ERROR BOX */
+    #errorBox {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      border: 2px solid red;
+      border-radius: 10px;
+      background: rgba(255,0,0,0.15);
+      color: #ff4444;
+      font-weight: bold;
+    }
+
+    /* MENU */
+    .menu {
+      text-align: left;
+      margin: 15px auto;
+      width: 90%;
+      border: 1px solid lime;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(0,255,0,0.05);
+    }
+
+    .menu label {
+      display: block;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+
+    .statusBox {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #00ff99;
+      text-shadow: 0 0 10px lime;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 14px;
+      font-size: 17px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: lime;
+      color: black;
+      width: 90%;
+    }
+
+    button:hover {
+      background: #00ff99;
+    }
+
+    /* RESULT */
+    #result {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border: 2px solid #00ff99;
+      border-radius: 12px;
+      background: rgba(0,255,0,0.1);
+    }
+
+    /* ✅ NEW CHECK OVERLAY FULL */
+    #checkOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 99999;
+
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      position: relative;
-      z-index: 1;
-    }
-
-    .header-wrap {
-      background: linear-gradient(135deg, #0a2a6b, #1e90ff);
-      padding: 14px;
-      border-radius: 18px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      box-shadow: 0 10px 28px rgba(30,144,255,0.35), 
-                  0 0 22px rgba(30,144,255,0.45);
-    }
-
-    .logo { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0,0,0,0.6);}
-    .logo img { width: 60%; height: 60%; object-fit: contain; }
-
-    .header-text h1 { font-size: 20px; margin: 0; }
-    .header-text small { font-size: 13px; color: #eaf4ff; margin-top: 2px; display: block; }
-
-    .card {
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 18px;
-      padding: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 24px rgba(2, 6, 23, 0.6);
-      width: 100%;
-      backdrop-filter: blur(6px);
-    }
-
-    .item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--highlight-border);
-      box-shadow: 0 0 12px rgba(30,144,255,0.4);
-    }
-
-    .left { display: flex; align-items: center; gap: 12px; }
-    .icon { width: 80px; height: 53px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-    .icon img { width: 94%; height: 90%; object-fit: contain; }
-
-    .text { min-width: 0; }
-    .title { font-weight: 600; margin: 0; font-size: 16px; }
-    .desc { color: var(--muted); font-size: 13px; margin-top: 4px; }
-
-    .toggle-wrap { position: relative; }
-    .toggle {
-      width: 52px;
-      height: 30px;
-      border-radius: 999px;
-      background: #0b0c0d; 
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      display: flex;
-      align-items: center;
-      padding: 4px;
-      cursor: pointer;
-      transition: background 0.2s ease, box-shadow 0.2s ease;
-    }
-    .knob {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #fff;
-      transform: translateX(0);
-      transition: transform 0.2s cubic-bezier(.2,.9,.3,1), box-shadow 0.2s ease;
-      box-shadow: 0 4px 12px rgba(2,6,23,0.6);
-    }
-    .toggle.on {
-      background: linear-gradient(90deg, #0d47a1, #1976d2, #42a5f5);
-      box-shadow: 0 0 12px rgba(33,150,243,0.75), 0 0 28px rgba(33,150,243,0.35);
-    }
-    .toggle.on .knob {
-      transform: translateX(22px);
-      box-shadow: 0 0 10px rgba(66,165,245,0.9), 0 6px 14px rgba(2,6,23,0.6);
-    }
-
-    .key-section {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 14px;
-      margin-top: 20px;
-      border-radius: 18px;
-      display: flex;
       flex-direction: column;
-      gap: 12px;
-      border: 1px solid var(--highlight-border);
-      box-shadow: 0 0 12px rgba(30,144,255,0.4);
-    }
-    .key-section .input-group { display: flex; gap: 12px; align-items: center; }
 
-    .input-group input {
-      padding: 10px;
-      border-radius: 8px;
-      background: #121315;
-      border: 1px solid var(--highlight-border);
-      color: #fff;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+    }
+
+    /* Neon circle */
+    #checkCircle {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      border: 4px solid lime;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 85px;
+      text-shadow: 0 0 40px lime;
+
+      box-shadow: 0 0 40px rgba(0,255,0,0.8),
+                  0 0 80px rgba(0,255,0,0.4);
+
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to   { transform: scale(1.08); }
+    }
+
+    /* Progress container */
+    #progressWrap {
+      width: 80%;
+      max-width: 520px;
+      height: 28px;
+
+      border-radius: 20px;
+      border: 2px solid lime;
+      margin-top: 30px;
+      overflow: hidden;
+
+      box-shadow: 0 0 20px rgba(0,255,0,0.4);
+    }
+
+    /* Progress bar */
+    #progressBar {
       width: 100%;
-    }
-    .input-group button { padding: 10px; border-radius: 8px; background: #1e90ff; border: none; color: #fff; cursor: pointer; }
-    .input-group button:hover { background: #0a6ed1; }
-
-    .error-msg { color: #ff4c4c; font-weight: 600; margin-top: 10px; display: none; }
-    .success-msg { color: #3fe6a7; font-weight: 600; margin-top: 10px; display: none; }
-
-    @media (max-width: 420px) {
-      .container { padding: 0 12px; }
-      .card { padding: 12px; }
+      height: 100%;
+      background: lime;
+      border-radius: 20px;
+      transition: width 0.1s linear;
     }
 
-    /* sao nhỏ */
-    .star {
+    #percentText {
+      margin-top: 15px;
+      font-size: 20px;
+      color: #00ff99;
+      text-shadow: 0 0 15px lime;
+    }
+
+    /* MATRIX SCREEN */
+    #matrixScreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: black;
+      overflow: hidden;
+    }
+
+    canvas {
       position: absolute;
-      font-size: 16px;
-      color: #ffd700;
-      text-shadow: 0 0 6px #fff, 0 0 12px #ffdd55, 0 0 18px #ffaa00;
-      pointer-events: none;
-      opacity: 0;
-      animation: star-fly 1s ease-out forwards;
+      inset: 0;
+      z-index: 0;
     }
 
-    @keyframes star-fly {
-      0%   { transform: scale(0.5) translate(0,0); opacity: 1; }
-      80%  { opacity: 1; }
-      100% { transform: scale(0.8) translate(var(--dx), var(--dy)); opacity: 0; }
+    #globe {
+      position: relative;
+      z-index: 2;
+      font-size: 200px;
+      margin-top: 20px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    #terminal {
+      position: relative;
+      z-index: 2;
+      margin: 15px auto;
+      width: 85%;
+      max-width: 700px;
+      height: 45%;
+      overflow-y: auto;
+      border: 2px solid lime;
+      padding: 15px;
+      text-align: left;
+      font-size: 14px;
+      background: rgba(0,255,0,0.07);
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="header-wrap">
-      <div class="logo">
-        <img src="https://i.postimg.cc/1tXmNhsB/58023179-26-D9-42-F1-81-B7-35-F40-CDDF716.jpg" alt="logo">
-      </div>
-      <div class="header-text">
-        <h1>App Aimbot Sasuke H4X</h1>
-        <small></small>
-      </div>
-    </div>
 
-    <div class="card">
-      <div class="item">
-        <div class="left">
-          <div class="icon"><img src="https://i.postimg.cc/VvwgBg8C/A5-CD186-E-C2-E1-44-BD-9-E55-C763321-D5-F60.png" alt="desert"></div>
-          <div class="text">
-            <div class="title">DESERT EAGLE</div>
-            <div class="desc">hỗ trợ độ bám tâm 31%</div>
-          </div>
-        </div>
-        <div class="toggle-wrap"><div class="toggle" data-gun="DESERT EAGLE"><div class="knob"></div></div></div>
-      </div>
+<h1>⚡ ZUROASI! CYBER AI TOOL  ⚡</h1>
 
-      <div class="item">
-        <div class="left">
-          <div class="icon"><img src="https://i.postimg.cc/HnsgvQ0r/863-EBF06-16-F5-4-B32-84-E7-55-A8125-EC123.png" alt="ump"></div>
-          <div class="text">
-            <div class="title">UMP Tiểu Liên</div>
-            <div class="desc">hỗ trợ nhạy tâm 50%</div>
-          </div>
-        </div>
-        <div class="toggle-wrap"><div class="toggle" data-gun="UMP"><div class="knob"></div></div></div>
-      </div>
+<!-- SOCIAL -->
+<div class="social">
+  <a href="https://zalo.me/0345100625 " target="_blank">💬 ZALO ANH </a>
+  <a href="https://www.facebook.com/share/1DNhrpuexR/?mibextid=wwXIfr" target="_blank">📘 FACEBOOK CHÍNH</a>
+</div>
 
-      <div class="item">
-        <div class="left">
-          <div class="icon"><img src="https://i.postimg.cc/TPWBttZ7/6819-E4-BF-FF6-B-4345-B17-E-6-ADAAC4-D3655.png" alt="m1887"></div>
-          <div class="text">
-            <div class="title">Shotgun M1887</div>
-            <div class="desc">đầm tâm khi kéo 30%</div>
-          </div>
-        </div>
-        <div class="toggle-wrap"><div class="toggle" data-gun="M1887"><div class="knob"></div></div></div>
-      </div>
+<div class="card">
 
-      <div class="item">
-        <div class="left">
-          <div class="icon"><img src="https://i.postimg.cc/T3xczCLN/9-F5-A56-B8-0-B31-4934-8-A45-16-C9196-A97-C7.png" alt="mp40"></div>
-          <div class="text">
-            <div class="title">MP40 Tiểu liên</div>
-            <div class="desc">Giảm loạn tâm khi kéo 45%</div>
-          </div>
-        </div>
-        <div class="toggle-wrap"><div class="toggle" data-gun="MP40"><div class="knob"></div></div></div>
-      </div>
+  <p>📱 Nhập tên máy iPhone:</p>
+  <input id="device" placeholder="VD: iPhone 7 Plus">
 
-      <div class="item">
-        <div class="left">
-          <div class="icon"><img src="https://i.postimg.cc/h45DZ5wg/A9-B7-A14-C-9497-4290-94-DF-2-F7-DB04-D9-E40.png" alt="recoil"></div>
-          <div class="text">
-            <div class="title">Tâm ảo Aim</div>
-            <div class="desc">Hồng tâm hỗ trợ ngắm</div>
-          </div>
-        </div>
-        <div class="toggle-wrap"><div class="toggle" data-gun="Recoil"><div class="knob"></div></div></div>
-      </div>
-    </div>
+  <div id="errorBox"></div>
 
-    <div class="key-section">
-      <div class="input-group">
-        <input type="password" id="keyInput" placeholder="Nhập Key Kích hoạt Menu ">
-        <button id="activateKey">Kích Hoạt</button>
-      </div>
-      <div id="errorMessage" class="error-msg">Sai Key. Vui lòng thử lại!</div>
-      <div id="successMessage" class="success-msg">Thông báo: Kích hoạt thành công!</div>
+  <!-- MENU -->
+  <div class="menu">
+    <p>⚙️ Chọn chức năng AI LOAD:</p>
+
+    <label><input type="checkbox" class="feature" value="FPS Boost" checked>
+      🚀 FPS Boost</label>
+
+    <label><input type="checkbox" class="feature" value="Aim Assist" checked>
+      🎯 DPI CONFING!</label>
+
+    <label><input type="checkbox" class="feature" value="Headshot Mode">
+      🔥 Headshot </label>
+
+    <label><input type="checkbox" class="feature" value="UMP Trick">
+      🌀 UMP Trick</label>
+
+    <div class="statusBox" id="statusBox">
+      ✅ Đang bật: FPS Boost, Aim Assist
     </div>
   </div>
 
-  <script>
-    // const validKeys = ["Filethaykhanhba"];
+  <!-- ON ALL -->
+  <button onclick="onAll()">⚡ ON ALL </button>
 
-    document.getElementById('activateKey').addEventListener('click', () => {
-      const key = document.getElementById('keyInput').value.trim();
-      if (validKeys.includes(key)) {
-        document.getElementById('successMessage').style.display = 'block';
-        document.getElementById('errorMessage').style.display = 'none';
-      } else {
-        document.getElementById('errorMessage').style.display = 'block';
-        document.getElementById('successMessage').style.display = 'none';
-      }
+  <!-- AI -->
+  <button onclick="startAI()">🤖 PHÂN TÍCH AI</button>
+
+  <div id="result"></div>
+</div>
+
+<!-- ✅ NEW CHECK OVERLAY -->
+<div id="checkOverlay">
+  <div id="checkCircle">✅</div>
+
+  <div id="progressWrap">
+    <div id="progressBar"></div>
+  </div>
+
+  <div id="percentText">Loading... 100%</div>
+</div>
+
+<!-- MATRIX -->
+<div id="matrixScreen">
+  <canvas id="matrixCanvas"></canvas>
+  <div id="globe">🌍</div>
+  <div id="terminal"></div>
+</div>
+
+<script>
+function randomSens() {
+  return Math.floor(Math.random() * 50) + 150;
+}
+
+/* VALID IPHONES */
+const validIphones = [
+  "iphone 7 plus",
+  "iphone 8","iphone 8 plus",
+  "iphone x","iphone xr","iphone xs","iphone xs max",
+  "iphone 11","iphone 11 pro","iphone 11 pro max",
+  "iphone 12","iphone 12 mini","iphone 12 pro","iphone 12 pro max",
+  "iphone 13","iphone 13 mini","iphone 13 pro","iphone 13 pro max",
+  "iphone 14","iphone 14 plus","iphone 14 pro","iphone 14 pro max",
+  "iphone 15","iphone 15 plus","iphone 15 pro","iphone 15 pro max"
+];
+
+function checkDevice(name) {
+  name = name.toLowerCase().trim();
+  if (!validIphones.includes(name)) {
+    return "❌ Chỉ hỗ trợ iPhone 7 Plus trở lên!";
+  }
+  return null;
+}
+
+/* MENU STATUS */
+document.querySelectorAll(".feature").forEach(cb => {
+  cb.addEventListener("change", () => {
+    let active = [];
+    document.querySelectorAll(".feature:checked").forEach(x => {
+      active.push(x.value);
     });
 
+    document.getElementById("statusBox").innerHTML =
+      "✅ Đang bật: " + (active.length ? active.join(", ") : "Không có");
+  });
+});
 
-    function createFireworks(toggle) {
-      const rect = toggle.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
+/* ✅ ON ALL WITH PROGRESS BAR */
+function onAll() {
+  let device = document.getElementById("device").value.trim();
+  let errorBox = document.getElementById("errorBox");
 
-      for (let i = 0; i < 6; i++) {
-        const star = document.createElement("div");
-        star.className = "star";
-        star.textContent = "⭐";
+  if (!device) {
+    errorBox.style.display = "block";
+    errorBox.innerHTML = "⚠️ Bạn chưa nhập thiết bị!";
+    return;
+  }
 
-        const angle = (Math.PI * 2 / 6) * i;
-        const distance = 40 + Math.random() * 20;
-        const dx = Math.cos(angle) * distance + "px";
-        const dy = Math.sin(angle) * distance + "px";
+  let error = checkDevice(device);
+  if (error) {
+    errorBox.style.display = "block";
+    errorBox.innerHTML = error;
+    return;
+  }
 
-        star.style.setProperty("--dx", dx);
-        star.style.setProperty("--dy", dy);
+  errorBox.style.display = "none";
 
-        star.style.left = centerX + "px";
-        star.style.top = centerY + "px";
+  let overlay = document.getElementById("checkOverlay");
+  let progressBar = document.getElementById("progressBar");
+  let percentText = document.getElementById("percentText");
 
-        document.body.appendChild(star);
-        setTimeout(() => star.remove(), 1000);
-      }
+  overlay.style.display = "flex";
+  overlay.style.opacity = "1";
+
+  let percent = 100;
+
+  let timer = setInterval(() => {
+    percentText.innerHTML = "Loading... " + percent + "%";
+    progressBar.style.width = percent + "%";
+
+    percent--;
+
+    if (percent < 0) {
+      clearInterval(timer);
+
+      overlay.style.opacity = "0";
+
+      setTimeout(() => {
+        overlay.style.display = "none";
+        window.location.href = "freefire://";
+      }, 900);
     }
+  }, 25);
+}
 
-    // toggle + hiệu ứng
-    document.querySelectorAll(".toggle").forEach(toggle => {
-      toggle.addEventListener("click", () => {
-        toggle.classList.toggle("on");
-        createFireworks(toggle);
-      });
+/* MATRIX */
+function startMatrix() {
+  const canvas = document.getElementById("matrixCanvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+  const fontSize = 18;
+  const columns = canvas.width / fontSize;
+  let drops = Array(Math.floor(columns)).fill(1);
+
+  return setInterval(() => {
+    ctx.fillStyle = "rgba(0,0,0,0.08)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "lime";
+    ctx.font = fontSize + "px Consolas";
+
+    drops.forEach((y, i) => {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, y * fontSize);
+      drops[i] = y * fontSize > canvas.height ? 0 : y + 1;
     });
+  }, 50);
+}
 
-    
-    class GameAssistManager {
-      constructor(config) {
-        this.config = config;
-        this.state = {};
-        this.init();
-      }
-      init() {
-        document.querySelectorAll(".toggle[data-gun]").forEach(toggle => {
-          const gun = toggle.dataset.gun;
-          const saved = localStorage.getItem(this._key(gun));
-          if (saved === "true") {
-            toggle.classList.add("on");
-            this.state[gun] = true;
-          } else {
-            this.state[gun] = false;
-          }
-          toggle.addEventListener("click", () => {
-            const isOn = toggle.classList.contains("on");
-            this.state[gun] = isOn;
-            localStorage.setItem(this._key(gun), isOn);
-            this.applyAssist(gun, isOn);
-          });
-        });
-      }
-      _key(gun) { return `bamTam_${gun}`; }
-      applyAssist(gun, enabled) {
-        const cfg = this.config[gun];
-        if (!cfg) return;
-        if (enabled) {
-          console.log(`%c[ON] ${gun}: Bám tâm ${cfg.bamTam}%`, "color: #4cafef; font-weight: bold");
-        } else {
-          console.log(`%c[OFF] ${gun}: Hỗ trợ đã tắt`, "color: #f44336; font-weight: bold");
-        }
-      }
-      setAssistLevel(gun, percent) {
-        if (this.config[gun]) {
-          this.config[gun].bamTam = percent;
-          console.log(`%c${gun} bám tâm setting ${percent}%`, "color: #ffc107; font-style: italic");
-          if (this.state[gun]) this.applyAssist(gun, true);
-        }
-      }
-      getState(gun) { return this.state[gun] || false; }
+/* AI */
+function startAI() {
+  let device = document.getElementById("device").value.trim();
+  let errorBox = document.getElementById("errorBox");
+  let result = document.getElementById("result");
+
+  if (!device) {
+    errorBox.style.display = "block";
+    errorBox.innerHTML = "⚠️ Bạn chưa nhập thiết bị!";
+    return;
+  }
+
+  let error = checkDevice(device);
+  if (error) {
+    errorBox.style.display = "block";
+    errorBox.innerHTML = error;
+    return;
+  }
+
+  errorBox.style.display = "none";
+  result.style.display = "none";
+
+  let screen = document.getElementById("matrixScreen");
+  let terminal = document.getElementById("terminal");
+
+  screen.style.display = "block";
+  terminal.innerHTML = "";
+
+  let matrixInterval = startMatrix();
+  let count = 0;
+
+  let interval = setInterval(() => {
+    terminal.innerHTML += "[AI] Scanning system line " + count + "...<br>";
+    terminal.scrollTop = terminal.scrollHeight;
+    count++;
+
+    if (count >= 200) {
+      clearInterval(interval);
+
+      setTimeout(() => {
+        clearInterval(matrixInterval);
+        screen.style.display = "none";
+
+        result.style.display = "block";
+        result.innerHTML = `
+          ✅ AI PHÂN TÍCH HOÀN TẤT!<br><br>
+          🎮 Sensitivity Random (150+)<br><br>
+          🎯 Tổng quan: <b>${randomSens()}</b><br>
+          🔴 Red Dot: <b>${randomSens()}</b><br>
+          🔍 Scope 2x: <b>${randomSens()}</b><br>
+          🎯 Scope 4x: <b>${randomSens()}</b><br>
+          🎯 Sniper: <b>${randomSens()}</b><br>
+          👀 Free Look: <b>${randomSens()}</b><br>
+        `;
+      }, 1200);
     }
+  }, 30);
+}
+</script>
 
-    const assistManager = new GameAssistManager({
-      "UMP":   { bamTam: 40 },
-      "MP40":  { bamTam: 40 },
-      "M1887": { bamTam: 40 },
-      "DESERT EAGLE": { bamTam: 40 }
-    });
-    assistManager.setAssistLevel("UMP", 55);
-  </script>
-</body>
-</html>
 </body>
 </html>
