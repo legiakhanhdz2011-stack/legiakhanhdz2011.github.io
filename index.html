@@ -1,482 +1,171 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Oreki Cyber AI Demo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Oreki Cyber AI Tool</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Consolas, monospace;
-      background: black;
-      color: lime;
-      text-align: center;
-      padding: 20px;
-    }
+<style>
+body{margin:0;font-family:Consolas,monospace;background:black;color:lime;text-align:center;padding:20px}
+h1{color:#00ff99;text-shadow:0 0 15px lime}
 
-    h1 {
-      color: #00ff99;
-      text-shadow: 0 0 15px lime;
-    }
+/* LOGIN */
+#loginBox{
+  max-width:380px;margin:120px auto;border:2px solid lime;border-radius:15px;
+  padding:25px;box-shadow:0 0 25px rgba(0,255,0,.5);
+  background:rgba(0,255,0,.05)
+}
+input{width:90%;padding:12px;border-radius:8px;border:1px solid lime;margin:10px 0;background:black;color:lime;font-size:16px}
+button{margin-top:12px;padding:14px;font-size:17px;font-weight:bold;border:none;border-radius:10px;cursor:pointer;background:lime;color:black;width:95%}
+button:hover{background:#00ff99}
+#errorBox{display:none;margin-top:10px;padding:12px;border:2px solid red;border-radius:10px;background:rgba(255,0,0,.15);color:#ff4444;font-weight:bold}
 
-    /* SOCIAL */
-    .social a {
-      display: block;
-      margin: 10px auto;
-      padding: 12px;
-      width: 260px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: bold;
-      color: black;
-      background: lime;
-      box-shadow: 0 0 15px rgba(0,255,0,0.5);
-    }
+/* MAIN */
+#app{display:none}
+.card{border:2px solid lime;border-radius:15px;padding:20px;max-width:480px;margin:auto;background:rgba(0,255,0,.05);box-shadow:0 0 25px rgba(0,255,0,.4)}
+.menu{text-align:left;margin:15px auto;width:90%;border:1px solid lime;padding:12px;border-radius:10px;background:rgba(0,255,0,.05)}
+.menu label{display:block;margin:8px 0}
+.statusBox{color:#00ff99;text-shadow:0 0 10px lime}
+#result{display:none;margin-top:20px;padding:15px;border:2px solid #00ff99;border-radius:12px;background:rgba(0,255,0,.1)}
 
-    .social a:hover {
-      background: #00ff99;
-      transform: scale(1.05);
-    }
-
-    /* CARD */
-    .card {
-      border: 2px solid lime;
-      border-radius: 15px;
-      padding: 20px;
-      max-width: 480px;
-      margin: auto;
-      background: rgba(0,255,0,0.05);
-      box-shadow: 0 0 25px rgba(0,255,0,0.4);
-    }
-
-    input {
-      width: 90%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid lime;
-      margin: 10px 0;
-      background: black;
-      color: lime;
-      font-size: 16px;
-    }
-
-    /* ERROR BOX */
-    #errorBox {
-      display: none;
-      margin-top: 10px;
-      padding: 12px;
-      border: 2px solid red;
-      border-radius: 10px;
-      background: rgba(255,0,0,0.15);
-      color: #ff4444;
-      font-weight: bold;
-    }
-
-    /* MENU */
-    .menu {
-      text-align: left;
-      margin: 15px auto;
-      width: 90%;
-      border: 1px solid lime;
-      padding: 12px;
-      border-radius: 10px;
-      background: rgba(0,255,0,0.05);
-    }
-
-    .menu label {
-      display: block;
-      margin: 8px 0;
-      cursor: pointer;
-    }
-
-    .statusBox {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #00ff99;
-      text-shadow: 0 0 10px lime;
-    }
-
-    button {
-      margin-top: 12px;
-      padding: 14px;
-      font-size: 17px;
-      font-weight: bold;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      background: lime;
-      color: black;
-      width: 90%;
-    }
-
-    button:hover {
-      background: #00ff99;
-    }
-
-    /* RESULT */
-    #result {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      border: 2px solid #00ff99;
-      border-radius: 12px;
-      background: rgba(0,255,0,0.1);
-    }
-
-    /* ✅ NEW CHECK OVERLAY FULL */
-    #checkOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.95);
-      z-index: 99999;
-
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-
-      opacity: 1;
-      transition: opacity 0.8s ease;
-    }
-
-    /* Neon circle */
-    #checkCircle {
-      width: 170px;
-      height: 170px;
-      border-radius: 50%;
-      border: 4px solid lime;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      font-size: 85px;
-      text-shadow: 0 0 40px lime;
-
-      box-shadow: 0 0 40px rgba(0,255,0,0.8),
-                  0 0 80px rgba(0,255,0,0.4);
-
-      animation: pulse 1s infinite alternate;
-    }
-
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to   { transform: scale(1.08); }
-    }
-
-    /* Progress container */
-    #progressWrap {
-      width: 80%;
-      max-width: 520px;
-      height: 28px;
-
-      border-radius: 20px;
-      border: 2px solid lime;
-      margin-top: 30px;
-      overflow: hidden;
-
-      box-shadow: 0 0 20px rgba(0,255,0,0.4);
-    }
-
-    /* Progress bar */
-    #progressBar {
-      width: 100%;
-      height: 100%;
-      background: lime;
-      border-radius: 20px;
-      transition: width 0.1s linear;
-    }
-
-    #percentText {
-      margin-top: 15px;
-      font-size: 20px;
-      color: #00ff99;
-      text-shadow: 0 0 15px lime;
-    }
-
-    /* MATRIX SCREEN */
-    #matrixScreen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: black;
-      overflow: hidden;
-    }
-
-    canvas {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
-
-    #globe {
-      position: relative;
-      z-index: 2;
-      font-size: 200px;
-      margin-top: 20px;
-      animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    #terminal {
-      position: relative;
-      z-index: 2;
-      margin: 15px auto;
-      width: 85%;
-      max-width: 700px;
-      height: 45%;
-      overflow-y: auto;
-      border: 2px solid lime;
-      padding: 15px;
-      text-align: left;
-      font-size: 14px;
-      background: rgba(0,255,0,0.07);
-    }
-  </style>
+/* MATRIX */
+#matrixScreen{
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:black;overflow:hidden
+}
+canvas{position:absolute;inset:0}
+#globe{
+  position:relative;z-index:2;font-size:200px;margin-top:20px;
+  animation:spin 2s linear infinite
+}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+#terminal{
+  position:relative;z-index:2;margin:15px auto;width:85%;max-width:700px;
+  height:45%;overflow-y:auto;border:2px solid lime;
+  padding:15px;text-align:left;font-size:14px;
+  background:rgba(0,255,0,.07)
+}
+</style>
 </head>
 
 <body>
 
-<h1>⚡ ZUROASI! CYBER AI TOOL  ⚡</h1>
-
-<!-- SOCIAL -->
-<div class="social">
-  <a href="https://zalo.me/0345100625 " target="_blank">💬 ZALO ANH </a>
-  <a href="https://www.facebook.com/share/1DNhrpuexR/?mibextid=wwXIfr" target="_blank">📘 FACEBOOK CHÍNH</a>
+<!-- LOGIN -->
+<div id="loginBox">
+<h1>🔐 LOGIN SYSTEM</h1>
+<input id="user" placeholder="Tài khoản">
+<input id="pass" type="password" placeholder="Mật khẩu">
+<button onclick="login()">ĐĂNG NHẬP</button>
+<div id="errorBox"></div>
 </div>
+
+<!-- MAIN -->
+<div id="app">
+<h1>⚡ ZUROASI! CYBER AI TOOL ⚡</h1>
 
 <div class="card">
+<p>📱 Nhập tên iPhone:</p>
+<input id="device" placeholder="VD: iPhone 11">
 
-  <p>📱 Nhập tên máy iPhone:</p>
-  <input id="device" placeholder="VD: iPhone 7 Plus">
+<div class="menu">
+<p>⚙️ Chức năng:</p>
+<label><input type="checkbox" checked> 🚀 FPS Boost</label>
+<label><input type="checkbox" checked> 🎯 DPI Config</label>
+<label><input type="checkbox"> 🔥 Headshot</label>
+<label><input type="checkbox"> 🌀 UMP Trick</label>
 
-  <div id="errorBox"></div>
-
-  <!-- MENU -->
-  <div class="menu">
-    <p>⚙️ Chọn chức năng AI LOAD:</p>
-
-    <label><input type="checkbox" class="feature" value="FPS Boost" checked>
-      🚀 FPS Boost</label>
-
-    <label><input type="checkbox" class="feature" value="Aim Assist" checked>
-      🎯 DPI CONFING!</label>
-
-    <label><input type="checkbox" class="feature" value="Headshot Mode">
-      🔥 Headshot </label>
-
-    <label><input type="checkbox" class="feature" value="UMP Trick">
-      🌀 UMP Trick</label>
-
-    <div class="statusBox" id="statusBox">
-      ✅ Đang bật: FPS Boost, Aim Assist
-    </div>
-  </div>
-
-  <!-- ON ALL -->
-  <button onclick="onAll()">⚡ ON ALL </button>
-
-  <!-- AI -->
-  <button onclick="startAI()">🤖 PHÂN TÍCH AI</button>
-
-  <div id="result"></div>
+<div class="statusBox">✅ Đã bật chức năng AI</div>
 </div>
 
-<!-- ✅ NEW CHECK OVERLAY -->
-<div id="checkOverlay">
-  <div id="checkCircle">✅</div>
-
-  <div id="progressWrap">
-    <div id="progressBar"></div>
-  </div>
-
-  <div id="percentText">Loading... 100%</div>
+<button onclick="startAI()">🤖 PHÂN TÍCH AI</button>
+<div id="result"></div>
+</div>
 </div>
 
 <!-- MATRIX -->
 <div id="matrixScreen">
-  <canvas id="matrixCanvas"></canvas>
-  <div id="globe">🌍</div>
-  <div id="terminal"></div>
+<canvas id="matrixCanvas"></canvas>
+<div id="globe">🌍</div>
+<div id="terminal"></div>
 </div>
 
 <script>
-function randomSens() {
-  return Math.floor(Math.random() * 50) + 150;
-}
-
-/* VALID IPHONES */
-const validIphones = [
-  "iphone 7 plus",
-  "iphone 8","iphone 8 plus",
-  "iphone x","iphone xr","iphone xs","iphone xs max",
-  "iphone 11","iphone 11 pro","iphone 11 pro max",
-  "iphone 12","iphone 12 mini","iphone 12 pro","iphone 12 pro max",
-  "iphone 13","iphone 13 mini","iphone 13 pro","iphone 13 pro max",
-  "iphone 14","iphone 14 plus","iphone 14 pro","iphone 14 pro max",
-  "iphone 15","iphone 15 plus","iphone 15 pro","iphone 15 pro max"
-];
-
-function checkDevice(name) {
-  name = name.toLowerCase().trim();
-  if (!validIphones.includes(name)) {
-    return "❌ Chỉ hỗ trợ iPhone 7 Plus trở lên!";
+/* LOGIN */
+const USER="admin", PASS="777";
+function login(){
+  let u=user.value.trim(), p=pass.value.trim();
+  if(u===USER && p===PASS){
+    loginBox.style.display="none";
+    app.style.display="block";
+  }else{
+    errorBox.style.display="block";
+    errorBox.innerHTML="❌ Sai tài khoản hoặc mật khẩu!";
   }
-  return null;
-}
-
-/* MENU STATUS */
-document.querySelectorAll(".feature").forEach(cb => {
-  cb.addEventListener("change", () => {
-    let active = [];
-    document.querySelectorAll(".feature:checked").forEach(x => {
-      active.push(x.value);
-    });
-
-    document.getElementById("statusBox").innerHTML =
-      "✅ Đang bật: " + (active.length ? active.join(", ") : "Không có");
-  });
-});
-
-/* ✅ ON ALL WITH PROGRESS BAR */
-function onAll() {
-  let device = document.getElementById("device").value.trim();
-  let errorBox = document.getElementById("errorBox");
-
-  if (!device) {
-    errorBox.style.display = "block";
-    errorBox.innerHTML = "⚠️ Bạn chưa nhập thiết bị!";
-    return;
-  }
-
-  let error = checkDevice(device);
-  if (error) {
-    errorBox.style.display = "block";
-    errorBox.innerHTML = error;
-    return;
-  }
-
-  errorBox.style.display = "none";
-
-  let overlay = document.getElementById("checkOverlay");
-  let progressBar = document.getElementById("progressBar");
-  let percentText = document.getElementById("percentText");
-
-  overlay.style.display = "flex";
-  overlay.style.opacity = "1";
-
-  let percent = 100;
-
-  let timer = setInterval(() => {
-    percentText.innerHTML = "Loading... " + percent + "%";
-    progressBar.style.width = percent + "%";
-
-    percent--;
-
-    if (percent < 0) {
-      clearInterval(timer);
-
-      overlay.style.opacity = "0";
-
-      setTimeout(() => {
-        overlay.style.display = "none";
-        window.location.href = "freefire://";
-      }, 900);
-    }
-  }, 25);
 }
 
 /* MATRIX */
-function startMatrix() {
-  const canvas = document.getElementById("matrixCanvas");
-  const ctx = canvas.getContext("2d");
+function startMatrix(){
+  const c=matrixCanvas,ctx=c.getContext("2d");
+  c.width=innerWidth;c.height=innerHeight;
+  const letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+  const font=18,cols=c.width/font;
+  let drops=Array(Math.floor(cols)).fill(1);
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  return setInterval(()=>{
+    ctx.fillStyle="rgba(0,0,0,.08)";
+    ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle="lime";
+    ctx.font=font+"px Consolas";
 
-  const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
-  const fontSize = 18;
-  const columns = canvas.width / fontSize;
-  let drops = Array(Math.floor(columns)).fill(1);
-
-  return setInterval(() => {
-    ctx.fillStyle = "rgba(0,0,0,0.08)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "lime";
-    ctx.font = fontSize + "px Consolas";
-
-    drops.forEach((y, i) => {
-      const text = letters[Math.floor(Math.random() * letters.length)];
-      ctx.fillText(text, i * fontSize, y * fontSize);
-      drops[i] = y * fontSize > canvas.height ? 0 : y + 1;
+    drops.forEach((y,i)=>{
+      const t=letters[Math.floor(Math.random()*letters.length)];
+      ctx.fillText(t,i*font,y*font);
+      drops[i]=y*font>c.height?0:y+1;
     });
-  }, 50);
+  },50);
 }
 
 /* AI */
-function startAI() {
-  let device = document.getElementById("device").value.trim();
-  let errorBox = document.getElementById("errorBox");
-  let result = document.getElementById("result");
+function randomSens(){return Math.floor(Math.random()*50)+150}
 
-  if (!device) {
-    errorBox.style.display = "block";
-    errorBox.innerHTML = "⚠️ Bạn chưa nhập thiết bị!";
-    return;
-  }
+function startAI(){
+  let d=device.value.trim();
+  if(!d) return alert("⚠️ Nhập thiết bị!");
 
-  let error = checkDevice(device);
-  if (error) {
-    errorBox.style.display = "block";
-    errorBox.innerHTML = error;
-    return;
-  }
+  matrixScreen.style.display="block";
+  terminal.innerHTML="";
+  let mat=startMatrix();
+  let i=0;
 
-  errorBox.style.display = "none";
-  result.style.display = "none";
+  let run=setInterval(()=>{
+    terminal.innerHTML+="[AI] Scanning system line "+i+"...<br>";
+    terminal.scrollTop=terminal.scrollHeight;
+    i++;
+    if(i>=180){
+      clearInterval(run);
+      setTimeout(()=>{
+        clearInterval(mat);
+        matrixScreen.style.display="none";
+        result.style.display="block";
+        result.innerHTML=`
+================================================<br>
+<b>KẾT QUẢ TỐI ƯU HÓA: ${d.toUpperCase()}</b><br>
+================================================<br><br>
 
-  let screen = document.getElementById("matrixScreen");
-  let terminal = document.getElementById("terminal");
+[ ĐỘ NHẠY FREE FIRE MAX ]<br>
+> Tổng quan: ${randomSens()}<br>
+> Red Dot: ${randomSens()}<br>
+> Scope 2x: ${randomSens()}<br>
+> Scope 4x: ${randomSens()}<br>
+> Sniper: ${randomSens()}<br>
+> Free Look: ${randomSens()}<br><br>
 
-  screen.style.display = "block";
-  terminal.innerHTML = "";
-
-  let matrixInterval = startMatrix();
-  let count = 0;
-
-  let interval = setInterval(() => {
-    terminal.innerHTML += "[AI] Scanning system line " + count + "...<br>";
-    terminal.scrollTop = terminal.scrollHeight;
-    count++;
-
-    if (count >= 200) {
-      clearInterval(interval);
-
-      setTimeout(() => {
-        clearInterval(matrixInterval);
-        screen.style.display = "none";
-
-        result.style.display = "block";
-        result.innerHTML = `
-          ✅ AI PHÂN TÍCH HOÀN TẤT!<br><br>
-          🎮 Sensitivity Random (150+)<br><br>
-          🎯 Tổng quan: <b>${randomSens()}</b><br>
-          🔴 Red Dot: <b>${randomSens()}</b><br>
-          🔍 Scope 2x: <b>${randomSens()}</b><br>
-          🎯 Scope 4x: <b>${randomSens()}</b><br>
-          🎯 Sniper: <b>${randomSens()}</b><br>
-          👀 Free Look: <b>${randomSens()}</b><br>
+[ LỜI KHUYÊN AI ]<br>
+> Cấu hình ổn định + headshot mượt 🔥
         `;
-      }, 1200);
+      },1000);
     }
-  }, 30);
+  },30);
 }
 </script>
 
